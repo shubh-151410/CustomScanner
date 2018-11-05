@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Scan Checkin QR</string>
+    <string name="scan_bar_code">Scan Bar Code</string>
+    <string  name = "scan">Scan Checkin QR</string>
+    <string name="result">RESULT</string>
+    <string name="flash_on">Flash On</string>
+    <string name="flash_off">Flash off</string>
+    <string name="scan_checkin_qr">Scan Checkin QR</string>
+</resources>
