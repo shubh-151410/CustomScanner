@@ -10,25 +10,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_gravity="top"
-        android:minHeight="?attr/actionBarSize"
-        android:background="@color/actionbar_opacity"
-        app:theme="@style/TransparentToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/toolbar_title"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/scan_checkin_qr"
-        android:paddingBottom="10dp"
-        android:textColor="@color/textColor"
-        android:layout_gravity="center"/>
+        android:layout_gravity="top"
+        android:background="@color/actionbar_opacity"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/TransparentToolbar">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="10dp"
+            android:text="@string/scan_checkin_qr"
+            android:textColor="@color/textColor" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_flash_on_black_24dp"
+            android:layout_gravity="right"/>
 
     </android.support.v7.widget.Toolbar>
+
 
 </FrameLayout>
