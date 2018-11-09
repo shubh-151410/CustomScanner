@@ -5,4 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="actionbar_opacity">#FFFFFF</color>
     <color name="textColor"> #424242</color>
+
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="viewfinder_laser">#ffcc0000</color>
+    <color name="viewfinder_border">#af1014</color>
 </resources>

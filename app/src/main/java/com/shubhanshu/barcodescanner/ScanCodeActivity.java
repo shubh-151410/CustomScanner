@@ -1,35 +1,62 @@
 package com.shubhanshu.barcodescanner;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
+
+
 import android.graphics.Paint;
-import android.graphics.Rect;
+
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.util.TypedValue;
+
+import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.TextView;
 
-import com.google.zxing.Result;
 
+import com.google.zxing.Result;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.lang.reflect.Parameter;
+import java.security.Policy;
+
+import me.dm7.barcodescanner.core.DisplayUtils;
+import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.util.AttributeSet;
 
+public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+    private static final String FLASH_STATE = "FLASH_STATE";
     private ZXingScannerView mScannerView;
     Toolbar toolbar;
-
+    CircularImageView flashoff;
+    private boolean mFlash;
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         mScannerView = new ZXingScannerView(this);
         setContentView(R.layout.activity_scan_code);
+        flashoff = (CircularImageView) findViewById(R.id.btnSwitch);
+        flashoff.setBackgroundDrawable(null);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        if (state != null) {
+            mFlash = state.getBoolean(FLASH_STATE, false);
+
+        } else {
+            mFlash = false;
+
+        }
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         mTitle.setText(toolbar.getTitle());
@@ -38,12 +65,17 @@ public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerV
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-////       getSupportActionBar().setTitle("Scan Qr Code");
-//       toolbar.setLogo(R.drawable.back_red1);
-
 
         ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
         contentFrame.addView(mScannerView);
+
+
+        flashoff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EnableFlash();
+            }
+        });
     }
 
 
@@ -52,6 +84,13 @@ public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerV
         super.onResume();
         mScannerView.setResultHandler(this);
         mScannerView.startCamera();
+        mScannerView.setFlash(mFlash);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FLASH_STATE, mFlash);
     }
 
     @Override
@@ -65,49 +104,23 @@ public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerV
         MainActivity.result_text.setText(rawResult.getText());
         onBackPressed();
     }
-    private static class CustomViewFinderView extends ViewFinderView {
-        public static final String TRADE_MARK_TEXT = "ZXing";
-        public static final int TRADE_MARK_TEXT_SIZE_SP = 40;
-        public final Paint PAINT = new Paint();
 
-        public CustomViewFinderView(Context context) {
-            super(context);
-            init();
-        }
 
-        public CustomViewFinderView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            init();
+    private boolean EnableFlash() {
+        mFlash = !mFlash;
+        if (mFlash) {
+            flashoff.setImageResource(R.drawable.ic_flash_on_black_24dp);
+        } else {
+            flashoff.setImageResource(R.drawable.ic_flash_off_black_24dp);
         }
-
-        private void init() {
-            PAINT.setColor(Color.WHITE);
-            PAINT.setAntiAlias(true);
-            float textPixelSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                    TRADE_MARK_TEXT_SIZE_SP, getResources().getDisplayMetrics());
-            PAINT.setTextSize(textPixelSize);
-            setSquareViewFinder(true);
-        }
-
-        @Override
-        public void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            drawTradeMark(canvas);
-        }
-
-        private void drawTradeMark(Canvas canvas) {
-            Rect framingRect = getFramingRect();
-            float tradeMarkTop;
-            float tradeMarkLeft;
-            if (framingRect != null) {
-                tradeMarkTop = framingRect.bottom + PAINT.getTextSize() + 10;
-                tradeMarkLeft = framingRect.left;
-            } else {
-                tradeMarkTop = 10;
-                tradeMarkLeft = canvas.getHeight() - PAINT.getTextSize() - 10;
-            }
-            canvas.drawText(TRADE_MARK_TEXT, tradeMarkLeft, tradeMarkTop, PAINT);
-        }
+        mScannerView.setFlash(mFlash);
+        return true;
     }
 
+    public void onCameraSelected(int cameraId) {
+
+        mScannerView.setFlash(mFlash);
+
+    }
 }
+
